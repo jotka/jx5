@@ -6,23 +6,23 @@ spec:
     schedule: ""
   cluster:
     chartRepository: http://bucketrepo.jx.svc.cluster.local/bucketrepo/charts
-    clusterName: kind
+    clusterName: pg
     devEnvApprovers:
     - todo
-    environmentGitOwner: todo
+    environmentGitOwner: jotka
     gitKind: github
     gitName: github
     gitServer: https://github.com
     provider: kubernetes
-    registry: ghcr.io
+    registry: acraksdanasdeveastus2wi7f.azurecr.io
   environments:
   - key: dev
     owner: jotka
-    repository: jx5
+    repository: jx3
   - key: staging
   - key: production
   ingress:
-    domain: 20.123.105.163.nip.io
+    domain: ""
     kind: ingress
     namespaceSubDomain: -jx.
     tls:
