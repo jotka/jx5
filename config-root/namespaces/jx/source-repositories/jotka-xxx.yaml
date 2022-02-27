@@ -1,0 +1,22 @@
+apiVersion: jenkins.io/v1
+kind: SourceRepository
+metadata:
+  creationTimestamp: null
+  labels:
+    owner: jotka
+    provider: github
+    repository: xxx
+    gitops.jenkins-x.io/pipeline: 'namespaces'
+  name: jotka-xxx
+  namespace: jx
+spec:
+  httpCloneURL: https://github.com/jotka/xxx.git
+  org: jotka
+  provider: https://github.com
+  providerKind: github
+  providerName: github
+  repo: xxx
+  scheduler:
+    kind: ""
+    name: in-repo
+  url: https://github.com/jotka/xxx
