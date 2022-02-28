@@ -13,51 +13,32 @@ spec:
       labels:
         app: jx-boot
         jenkins-x.io/kind: jx-git-operator
+      annotations:
+        traffic.sidecar.istio.io/excludeOutboundIPRanges: "172.21.0.0/32,172.18.0.0/32,172.18.0.1/32" #exclude istio when talking to the k8s API
+        proxy.istio.io/config: '{ "holdApplicationUntilProxyStarts": true }'
     spec:
-      initContainers:
-      - args:
-        - gitops
-        - git
-        - clone
-        command:
-        - jx
-        env:
-        - name: XDG_CONFIG_HOME
-          value: /workspace/xdg_config
-        envFrom:
-        - secretRef:
-            name: jx-boot-job-env-vars
-            optional: true
-        image: ghcr.io/jenkins-x/jx-boot:3.2.256
-        name: git-clone
-        volumeMounts:
-        - mountPath: /workspace
-          name: workspace-volume
-        workingDir: /workspace
       containers:
-      - args:
-        - apply
-        command:
-        - make
-        env:
-        - name: XDG_CONFIG_HOME
-          value: /workspace/xdg_config
-        envFrom:
-        - secretRef:
-            name: jx-boot-job-env-vars
-            optional: true
-        image: ghcr.io/jenkins-x/jx-boot:3.2.256
-        imagePullPolicy: Always
-        name: job
-        volumeMounts:
-        - mountPath: /workspace
-          name: workspace-volume
-        workingDir: /workspace/source
+        - name: job
+          command: [ "/bin/sh","-c" ]
+          args: [ "jx gitops git clone; cd /workspace/source/source; make apply" ]
+          env:
+            - name: XDG_CONFIG_HOME
+              value: /workspace/xdg_config
+          envFrom:
+            - secretRef:
+                name: jx-boot-job-env-vars
+                optional: true
+          image: acraksdanasdeveastus2wi7f.azurecr.io/jx-boot:3.2.256
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /workspace
+              name: workspace-volume
+          workingDir: /workspace/source
       dnsPolicy: ClusterFirst
       restartPolicy: Never
       schedulerName: default-scheduler
       serviceAccountName: jx-boot-job
       terminationGracePeriodSeconds: 30
       volumes:
-      - name: workspace-volume
-        emptyDir: {}
+        - name: workspace-volume
+          emptyDir: {}
